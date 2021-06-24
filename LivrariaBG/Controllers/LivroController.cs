@@ -16,6 +16,15 @@ namespace LivrariaBG.Controllers
         // Cadastro Livro
         public ActionResult Cadastrar()
         {
+            var ObjCategoria = new CategoriaDAO();
+            var ListaCategoria = ObjCategoria.Select();
+            SelectList lista = new SelectList(ListaCategoria, "idCategoria", "nomeCategoria");
+            ViewBag.Lista = lista;
+
+            var ObjEditora = new EditoraDAO();
+            var ListaEditora = ObjEditora.Select();
+            SelectList listaEditora = new SelectList(ListaEditora, "idEditora", "nomeEditora");
+            ViewBag.Lista = listaEditora;
 
             return View();
         }
@@ -140,7 +149,24 @@ namespace LivrariaBG.Controllers
             }
             return RedirectToAction("ConsultarTodosLivros");
         }
-        
+        private List<Categoria> SelecionaCategoria(MySqlDataReader retorno)
+        {
+            var categorias = new List<Categoria>();
+
+            while (retorno.Read())
+            {
+                var TempCategoria = new Categoria()
+                {
+                    idCategoria = int.Parse(retorno["idCategoria"].ToString()),
+                    nomeCategoria = retorno["nomeCategoria"].ToString(),
+                    tipoCategoria = retorno["tipoProduto"].ToString(),
+                };
+                categorias.Add(TempCategoria);
+            }
+            retorno.Close();
+            return categorias;
+        }
+
     }
 }
 
